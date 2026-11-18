@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # 1. The Database
+  mongo:
+    image: mongo:latest
+    container_name: judge_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # 2. The Queue (Redis)
+  redis:
+    image: redis:alpine
+    container_name: judge_redis
+    ports:
+      - "6379:6379"
+
+  # 3. The Backend API
+  api:
+    build: .
+    container_name: judge_api
+    command: npm run dev
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      # Docker Networking: Use service names ('mongo', 'redis') instead of localhost
+      - MONGO_URI=mongodb://mongo:27017/coding-judge
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      # Pass your Google Auth secrets here or use a .env file
+      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in the root .env file}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:?Set GOOGLE_CLIENT_ID in the root .env file}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:?Set GOOGLE_CLIENT_SECRET in the root .env file}
+      - USER_REDIRECT_URI=http://localhost:5000/api/user/auth/redirect
+      - ADMIN_REDIRECT_URI=http://localhost:5000/api/admin/auth/redirect
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      # 🔴 CRITICAL: Share the 'processing' folder with the worker
+      - shared_processing:/app/processing
+      # Mount source code for live reloading (optional)
+      - .:/app
+      - /app/node_modules
+
+  # 4. The Worker (The Judge)
+  worker:
+    build: .
+    container_name: judge_worker
+    command: node worker.js
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/coding-judge
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mongo
+      - redis
+      - api
+    volumes:
+      # 🔴 CRITICAL: Access the SAME folder as the API
+      - shared_processing:/app/processing
+      - .:/app
+      - /app/node_modules
+
+# Define the shared volumes
+volumes:
+  mongo_data:
+  shared_processing:
