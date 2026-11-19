@@ -82,7 +82,7 @@ exports.adminRegisterLogin = asyncHandler(async (req, res) => {
   }
 
   const token = jwt.sign({ id: admin._id, role: "admin" }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
+    expiresIn: "30d",
   });
 
   // Redirect to Frontend Callback with token and admin data
