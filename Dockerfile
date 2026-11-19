@@ -22,4 +22,4 @@ RUN mkdir -p processing
 EXPOSE 5000
 
 # 8. Default command (Can be overridden by Docker Compose)
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
