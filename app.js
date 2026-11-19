@@ -1,4 +1,5 @@
 
+
 const express = require("express");
 const cors = require("cors");
 const errorHandler = require("./middlewares/errorHandler");
@@ -24,7 +25,6 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-
       return callback(new Error(`CORS blocked this origin: ${origin}`));
     },
     credentials: true,
@@ -66,3 +66,4 @@ startServer().catch((error) => {
   console.error("Failed to start Code Judge API:", error);
   process.exit(1);
 });
+

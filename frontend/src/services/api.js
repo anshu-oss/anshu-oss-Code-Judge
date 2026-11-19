@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+// Set VITE_API_BASE_URL to your deployed backend origin in Vercel.
+// Example: https://your-backend.up.railway.app (do not add /api).
+const API_ORIGIN = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/+$/, '');
+const API_BASE_URL = `${API_ORIGIN}/api`;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
