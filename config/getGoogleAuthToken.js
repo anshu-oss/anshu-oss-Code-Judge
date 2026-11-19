@@ -1,4 +1,4 @@
-const { google } = require("googleapis");
+loacconst { google } = require("googleapis");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Admin = require("../models/Admin");
@@ -48,7 +48,7 @@ exports.userRegisterLogin = asyncHandler(async (req, res) => {
   });
 
   // Redirect to Frontend Callback with token and user data
-  const frontendCallbackUrl = new URL('http://localhost:3030/auth/callback');
+  const frontendCallbackUrl = new URL('https://anshu-oss-code-judge.vercel.app/auth/callback');
   frontendCallbackUrl.searchParams.append('token', token);
   frontendCallbackUrl.searchParams.append('role', 'user');
   frontendCallbackUrl.searchParams.append('user', JSON.stringify({
@@ -86,7 +86,7 @@ exports.adminRegisterLogin = asyncHandler(async (req, res) => {
   });
 
   // Redirect to Frontend Callback with token and admin data
-  const frontendCallbackUrl = new URL('http://localhost:3030/auth/callback');
+  const frontendCallbackUrl = new URL('https://anshu-oss-code-judge.vercel.app/auth/callback');
   frontendCallbackUrl.searchParams.append('token', token);
   frontendCallbackUrl.searchParams.append('role', 'admin');
   frontendCallbackUrl.searchParams.append('user', JSON.stringify({
