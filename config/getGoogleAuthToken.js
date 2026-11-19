@@ -44,7 +44,7 @@ exports.userRegisterLogin = asyncHandler(async (req, res) => {
 
   // Create Token
   const token = jwt.sign({ id: user._id, role: "user" }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
+     expiresIn: "30d",
   });
 
   // Redirect to Frontend Callback with token and user data
